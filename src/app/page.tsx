@@ -1,6 +1,6 @@
+// main app
 import GeocodeTest from '../components/geocode-test'
 
-// TO-DO: DOCUMENTATION
 export default function Home() {
   return (
     <main className="min-h-screen bg-dark p-8">

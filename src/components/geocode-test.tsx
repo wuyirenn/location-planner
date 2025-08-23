@@ -1,27 +1,18 @@
+// test geocode component
 'use client'
 
-import { useState } from 'react'
-
-// TO-DO: CLEAN UP + MOVE TYPES TO APPROPRIATE FILE
-interface GeocodeResult {
-  lat: number
-  lng: number
-  address: string
-  place_id: string
-  status: string
-}
-
-interface GeocodeError {
-  error: string
-}
+import { useState } from 'react';
+import type { GeocodeResult, GeocodeError } from '@/types/geocoding';
 
 export default function GeocodeTest() {
-  const [address, setAddress] = useState('')
-  const [result, setResult] = useState<GeocodeResult | GeocodeError | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [address, setAddress] = useState('');
+  const [result, setResult] = useState<GeocodeResult | GeocodeError | null>(null);
+  const [loading, setLoading] = useState(false);
 
+
+  // handle geocode
   const handleGeocode = async () => {
-    if (!address) return
+    if (!address) return;
     
     setLoading(true)
     try {
@@ -29,18 +20,18 @@ export default function GeocodeTest() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ address })
-      })
+      });
       
-      const data = await response.json()
-      setResult(data)
+      const data = await response.json();
+      setResult(data);
     } catch {
-      setResult({ error: 'Failed to geocode' })
+      setResult({ error: 'Failed to geocode' });
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  } // future to-do: move hooks to helper file
 
   return (
-    <div className="p-6 bg-white rounded shadow">
+    <div className="p-6 bg-dark rounded shadow">
       <h2 className="text-xl font-bold mb-4">Geocode Test</h2>
       
       <div className="flex gap-2 mb-4">
@@ -60,7 +51,7 @@ export default function GeocodeTest() {
       </div>
 
       {result && (
-        <pre className="bg-gray-100 p-4 rounded text-sm">
+        <pre className="bg-dark p-4 rounded text-sm">
           {JSON.stringify(result, null, 2)}
         </pre>
       )}
