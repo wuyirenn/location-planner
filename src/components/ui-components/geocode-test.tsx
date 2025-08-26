@@ -2,7 +2,7 @@
 'use client'
 
 import { useState } from 'react';
-import type { GeocodeResult, GeocodeError } from '@/types/geocoding';
+import type { GeocodeResult, GeocodeError } from '@/types/geocoding-types';
 
 export default function GeocodeTest() {
   const [address, setAddress] = useState('');
@@ -31,8 +31,8 @@ export default function GeocodeTest() {
   } // future to-do: move hooks to helper file
 
   return (
-    <div className="p-6 bg-dark rounded shadow">
-      <h2 className="text-xl font-bold mb-4">Geocode Test</h2>
+    <div className="p-6 w-full bg-dark rounded shadow">
+      <h2 className="text-xl font-bold mb-4">Enter address:</h2>
       
       <div className="flex gap-2 mb-4">
         <input
