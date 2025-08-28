@@ -60,7 +60,7 @@ export default function BaseMap({
             center={center}
             zoom={zoom}
             style={{ height, width: '95%' }}
-            key={`${center[0]}-${center[1]}-${zoom}`} // force re-render when center/zoom changes
+            // key={`${center[0]}-${center[1]}-${zoom}`} // force re-render when center/zoom changes
             >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

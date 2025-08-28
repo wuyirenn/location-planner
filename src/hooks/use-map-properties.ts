@@ -6,7 +6,6 @@ import type { Map as LeafletMap } from "leaflet";
 export function useMapProperties(
     properties: BaseMapType,
     setProperties: React.Dispatch<React.SetStateAction<BaseMapType>>,
-    mapProperties: React.MutableRefObject<BaseMapType>,
     mapRef: React.MutableRefObject<LeafletMap | null>
 ) {
 
@@ -22,9 +21,6 @@ export function useMapProperties(
                 zoom,
                 center: [center.lat, center.lng],
             }));
-
-            mapProperties.current.center = [center.lat, center.lng]
-            mapProperties.current.zoom = zoom
 
         } catch (error) {
             console.error('Error updating map properties');

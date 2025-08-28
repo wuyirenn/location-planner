@@ -24,18 +24,10 @@ export default function Home() {
       zoom: BASE_MAP_DEFAULT_ZOOM
   });
 
-  const mapProperties = useRef<BaseMapType>(
-    {
-      center: [BASE_MAP_LAT, BASE_MAP_LNG],
-      zoom: BASE_MAP_DEFAULT_ZOOM
-    }
-  )
-
   const mapRef = useRef<LeafletMap | null>(null);
   const { handleMapReady, handleLocationClick } = useMapProperties(
     properties,
     setProperties,
-    mapProperties,
     mapRef
   )
 
@@ -49,8 +41,8 @@ export default function Home() {
         <GeocodeTest />
 
         <BaseMap
-          center={mapProperties.current.center}
-          zoom={mapProperties.current.zoom}
+          center={properties.center}
+          zoom={properties.zoom}
           height="400px"
           onLocationClick={handleLocationClick}
           onMapReady={handleMapReady}
@@ -59,8 +51,6 @@ export default function Home() {
         <div className="mt-4 text-white">
           <p>Current Zoom: {properties.zoom}</p>
           <p>Current Center: { [properties.center[0].toFixed(4), properties.center[1].toFixed(4)] }</p>
-          <p>Current Zoom (ref): {mapProperties.current.zoom}</p>
-          <p>Current Center (ref): { [mapProperties.current.center[0].toFixed(4), mapProperties.current.center[1].toFixed(4)] }</p>
         </div>
       </div>
     </main>
