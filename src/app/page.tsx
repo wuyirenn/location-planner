@@ -1,26 +1,43 @@
 "use client";
 
 // main app
-import { useState } from 'react';
-import GeocodeTest from '../components/ui-components/geocode-test';
-import { BASE_MAP_LAT, BASE_MAP_LNG, BASE_MAP_DEFAULT_ZOOM } from '@/lib/constants/map-constants';
-import dynamic from 'next/dynamic';
+import { useState, useRef } from "react";
+import { BASE_MAP_LAT, BASE_MAP_LNG, BASE_MAP_DEFAULT_ZOOM } from "@/lib/constants/map-constants";
 
-// dynamic import leaflet map component
+import GeocodeTest from "../components/ui-components/geocode-test";
+import { useMapProperties } from "@/hooks/use-map-properties";
+
+import type { BaseMapType } from "@/types/map-types";
+import type { Map as LeafletMap } from "leaflet";
+
+import dynamic from "next/dynamic";
+
+// dynamic import for leaflet map component
 const BaseMap = dynamic(() => import('../components/maps/base-map'), {
   ssr: false,
-  loading: () => <div style={{ height: '500px' }}>Loading map...</div>
+  loading: () => <div style={{ height: "400px" }}>Loading map...</div>
 })
 
 export default function Home() {
-  const [mapCenter, setMapCenter] = useState<[number, number]>([BASE_MAP_LAT, BASE_MAP_LNG]);
-  const [mapZoom, setMapZoom] = useState(BASE_MAP_DEFAULT_ZOOM);
+  const [properties, setProperties] = useState<BaseMapType>({
+      center: [BASE_MAP_LAT, BASE_MAP_LNG],
+      zoom: BASE_MAP_DEFAULT_ZOOM
+  });
 
-  const handleLocationClick = (lat: number, lng: number) => {
-    console.log('Location clicked:', lat, lng)
-    setMapCenter([lat, lng]);
-    setMapZoom(15); // TO-DO: DYNAMIC ZOOM BASED OFF MAP INTERACTIONS
-  }
+  const mapProperties = useRef<BaseMapType>(
+    {
+      center: [BASE_MAP_LAT, BASE_MAP_LNG],
+      zoom: BASE_MAP_DEFAULT_ZOOM
+    }
+  )
+
+  const mapRef = useRef<LeafletMap | null>(null);
+  const { handleMapReady, handleLocationClick } = useMapProperties(
+    properties,
+    setProperties,
+    mapProperties,
+    mapRef
+  )
 
   return (
     <main className="flex-col min-h-screen bg-dark p-8">
@@ -32,11 +49,19 @@ export default function Home() {
         <GeocodeTest />
 
         <BaseMap
-          center={mapCenter}
-          zoom={mapZoom}
+          center={mapProperties.current.center}
+          zoom={mapProperties.current.zoom}
           height="400px"
           onLocationClick={handleLocationClick}
+          onMapReady={handleMapReady}
         />
+
+        <div className="mt-4 text-white">
+          <p>Current Zoom: {properties.zoom}</p>
+          <p>Current Center: { [properties.center[0].toFixed(4), properties.center[1].toFixed(4)] }</p>
+          <p>Current Zoom (ref): {mapProperties.current.zoom}</p>
+          <p>Current Center (ref): { [mapProperties.current.center[0].toFixed(4), mapProperties.current.center[1].toFixed(4)] }</p>
+        </div>
       </div>
     </main>
   )

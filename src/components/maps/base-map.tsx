@@ -3,12 +3,12 @@
 
 "use client";
 
-import { useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
+import { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-import type { BaseMapType } from "@/types/map-types";
+import type { BaseMapProps, BaseMapType } from "@/types/map-types";
 import { BASE_MAP_LAT, BASE_MAP_LNG, BASE_MAP_DEFAULT_ZOOM } from '@/lib/constants/map-constants';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl; // TO-DO: FIX TYPE ERROR
@@ -29,12 +29,23 @@ function MapClickHandler({ onLocationClick }: { onLocationClick?: (lat: number, 
     return null;
 }
 
+function MapInstanceCapture({ onMapReady }: { onMapReady?: (map: L.Map) => void }) {
+    const map = useMap();
+
+    useEffect(() => {
+        onMapReady?.(map);
+    }, [map, onMapReady]);
+
+    return null;
+}
+
 export default function BaseMap({
     center = [BASE_MAP_LAT, BASE_MAP_LNG],
     zoom = BASE_MAP_DEFAULT_ZOOM,
-    height,
-    onLocationClick
-}: BaseMapType) {
+    height = "400px",
+    onLocationClick,
+    onMapReady
+}: BaseMapProps) {
     const [clickedLocation, setClickedLocation] = useState<[number, number] | null>(null);
 
     const handleLocationClick = (lat: number, lng: number) => {
@@ -57,6 +68,7 @@ export default function BaseMap({
             />
             
             <MapClickHandler onLocationClick={handleLocationClick} />
+            <MapInstanceCapture onMapReady={onMapReady} />
 
             {clickedLocation && (
                 <Marker position={clickedLocation}>
