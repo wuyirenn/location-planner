@@ -9,7 +9,7 @@ class GoogleMapsService {
   // init
   constructor() {
     if (!GOOGLE_MAPS_API_KEY || !GOOGLE_MAPS_SECRET) {
-      throw new Error('GOOGLE_MAPS_API_KEY and GOOGLE_MAPS_SECRET are required');
+      throw new Error("GOOGLE_MAPS_API_KEY and GOOGLE_MAPS_SECRET are required");
     }
     this.apiKey = GOOGLE_MAPS_API_KEY;
     this.secret = GOOGLE_MAPS_SECRET;
@@ -27,12 +27,12 @@ class GoogleMapsService {
     
     const data = await response.json();
     
-    if (data.status !== 'OK') {
-      throw new Error(`Geocoding failed: ${data.status} - ${data.error_message || 'Unknown error'}`);
+    if (data.status !== "OK") {
+      throw new Error(`Geocoding failed: ${data.status} - ${data.error_message || "Unknown error"}`);
     }
     
     if (!data.results || data.results.length === 0) {
-      throw new Error('No results found');
+      throw new Error("No results found");
     }
     
     const result = data.results[0];

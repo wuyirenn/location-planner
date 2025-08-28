@@ -1,6 +1,6 @@
+// main page.tsx
 "use client";
 
-// main app
 import { useState, useRef } from "react";
 import { BASE_MAP_LAT, BASE_MAP_LNG, BASE_MAP_DEFAULT_ZOOM } from "@/lib/constants/map-constants";
 
@@ -13,20 +13,24 @@ import type { Map as LeafletMap } from "leaflet";
 import dynamic from "next/dynamic";
 
 // dynamic import for leaflet map component
-const BaseMap = dynamic(() => import('../components/maps/base-map'), {
+const BaseMap = dynamic(() => import("../components/maps/base-map"), {
   ssr: false,
   loading: () => <div style={{ height: "400px" }}>Loading map...</div>
 })
 
+
+// main app
 export default function Home() {
+  // source of truth for map state
   const [properties, setProperties] = useState<BaseMapType>({
       center: [BASE_MAP_LAT, BASE_MAP_LNG],
       zoom: BASE_MAP_DEFAULT_ZOOM
   });
 
-  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null); // source of truth for location
 
   const mapRef = useRef<LeafletMap | null>(null);
+
   const { handleMapReady, handleLocationClick, handleGeocodeSuccess } = useMapProperties(
     properties,
     setProperties,

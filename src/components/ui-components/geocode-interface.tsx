@@ -1,15 +1,15 @@
 // geocode component
-'use client'
+"use client"
 
-import { useState } from 'react';
-import type { GeocodeResult, GeocodeError, GeocodeInterfaceProps } from '@/types/geocoding-types';
+import { useState } from "react";
+import type { GeocodeResult, GeocodeError, GeocodeInterfaceProps } from "@/types/geocoding-types";
 
 export default function GeocodeInterface({
   onGeocodeSuccess
 }:
   GeocodeInterfaceProps
 ) {
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState("");
   const [result, setResult] = useState<GeocodeResult | GeocodeError | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -19,9 +19,9 @@ export default function GeocodeInterface({
     
     setLoading(true)
     try {
-      const response = await fetch('/api/geocode', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/geocode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ address })
       });
       
@@ -33,7 +33,7 @@ export default function GeocodeInterface({
         onGeocodeSuccess(data.lat, data.lng);
       }
     } catch {
-      setResult({ error: 'Failed to geocode' });
+      setResult({ error: "Failed to geocode" });
     }
     setLoading(false);
   } // future to-do: move hooks to helper file
@@ -54,7 +54,7 @@ export default function GeocodeInterface({
           disabled={loading}
           className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
         >
-          {loading ? 'Loading...' : 'Geocode'}
+          {loading ? "Loading..." : "Geocode"}
         </button>
       </div>
 

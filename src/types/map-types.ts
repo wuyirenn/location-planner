@@ -1,3 +1,5 @@
+// map and location types
+
 import { Map as LeafletMap } from "leaflet";
 
 export type BaseMapType = {

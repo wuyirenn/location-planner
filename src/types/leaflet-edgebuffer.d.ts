@@ -1,6 +1,8 @@
-import 'leaflet';
+// leaflet types for plugins
 
-declare module 'leaflet' {
+import "leaflet";
+
+declare module "leaflet" {
   namespace GridLayer {
     interface Options {
       edgeBufferTiles?: number;
@@ -8,6 +10,6 @@ declare module 'leaflet' {
   }
 }
 
-declare module 'leaflet-edgebuffer' {
+declare module "leaflet-edgebuffer" {
   // Plugin extends Leaflet automatically when imported
 }

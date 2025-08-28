@@ -1,6 +1,7 @@
 // TO-DO: DOCUMENTATION + TRANSITIONS
 // TO-DO: MAP STYLING
 
+// map component
 "use client";
 
 import { useState, useEffect } from "react";
@@ -11,13 +12,14 @@ import "leaflet/dist/leaflet.css";
 
 import type { BaseMapProps } from "@/types/map-types";
 
-// delete (L.Icon.Default.prototype as any)._getIconUrl; // TO-DO: FIX TYPE ERROR
+// icon options
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 })
 
+// handle map click
 function MapClickHandler({ onLocationClick }: { onLocationClick?: (lat: number, lng: number ) => void }) {
     useMapEvents({
         click: (e) => {
@@ -39,6 +41,7 @@ function MapInstanceCapture({ onMapReady }: { onMapReady?: (map: L.Map) => void 
     return null;
 }
 
+// core leaflet map object
 export default function BaseMap({
     center,
     zoom,
@@ -59,13 +62,13 @@ export default function BaseMap({
         <MapContainer
             center={center}
             zoom={zoom}
-            style={{ height, width: '95%' }}
+            style={{ height, width: "95%" }}
             // key={`${center[0]}-${center[1]}-${zoom}`} // force re-render when center/zoom changes
         >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; OpenStreetMap contributors'
-                edgeBufferTiles={edgeBufferTiles}
+                attribution="&copy; OpenStreetMap contributors"
+                edgeBufferTiles={edgeBufferTiles} // buffer for cleaner renders
             />
             
             <MapClickHandler onLocationClick={handleLocationClick} />
