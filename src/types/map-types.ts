@@ -8,6 +8,7 @@ export type BaseMapType = {
 export type BaseMapProps = {
     center : [number, number];
     zoom: number;
+    edgeBuffer: number;
     height: string;
     onLocationClick: (lat: number, lng: number) => void;
     onMapReady?: (map: LeafletMap) => void;

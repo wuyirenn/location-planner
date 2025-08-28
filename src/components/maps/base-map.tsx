@@ -6,6 +6,7 @@
 import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
+import "leaflet-edgebuffer";
 import "leaflet/dist/leaflet.css";
 
 import type { BaseMapProps, BaseMapType } from "@/types/map-types";
@@ -42,6 +43,7 @@ function MapInstanceCapture({ onMapReady }: { onMapReady?: (map: L.Map) => void 
 export default function BaseMap({
     center = [BASE_MAP_LAT, BASE_MAP_LNG],
     zoom = BASE_MAP_DEFAULT_ZOOM,
+    edgeBufferTiles = 5,
     height = "400px",
     onLocationClick,
     onMapReady
@@ -65,6 +67,7 @@ export default function BaseMap({
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; OpenStreetMap contributors'
+                edgeBufferTiles={edgeBufferTiles}
             />
             
             <MapClickHandler onLocationClick={handleLocationClick} />
