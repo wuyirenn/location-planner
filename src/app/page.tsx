@@ -4,10 +4,10 @@
 import { useState, useRef } from "react";
 import { BASE_MAP_LAT, BASE_MAP_LNG, BASE_MAP_DEFAULT_ZOOM } from "@/lib/constants/map-constants";
 
-import GeocodeTest from "../components/ui-components/geocode-test";
+import GeocodeInterface from "../components/ui-components/geocode-interface";
 import { useMapProperties } from "@/hooks/use-map-properties";
 
-import type { BaseMapType } from "@/types/map-types";
+import type { BaseMapType, SelectedLocation } from "@/types/map-types";
 import type { Map as LeafletMap } from "leaflet";
 
 import dynamic from "next/dynamic";
@@ -24,11 +24,15 @@ export default function Home() {
       zoom: BASE_MAP_DEFAULT_ZOOM
   });
 
+  const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null);
+
   const mapRef = useRef<LeafletMap | null>(null);
-  const { handleMapReady, handleLocationClick } = useMapProperties(
+  const { handleMapReady, handleLocationClick, handleGeocodeSuccess } = useMapProperties(
     properties,
     setProperties,
-    mapRef
+    mapRef,
+    selectedLocation,
+    setSelectedLocation
   )
 
   return (
@@ -38,14 +42,18 @@ export default function Home() {
           Location Intelligence
         </h1>
         
-        <GeocodeTest />
+        <GeocodeInterface 
+          onGeocodeSuccess={handleGeocodeSuccess}
+        />
 
         <BaseMap
           center={properties.center}
           zoom={properties.zoom}
           height="400px"
+          edgeBufferTiles={3}
           onLocationClick={handleLocationClick}
           onMapReady={handleMapReady}
+          selectedLocation={selectedLocation}
         />
 
         <div className="mt-4 text-white">

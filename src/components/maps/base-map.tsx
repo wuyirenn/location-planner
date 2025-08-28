@@ -9,10 +9,9 @@ import L from "leaflet";
 import "leaflet-edgebuffer";
 import "leaflet/dist/leaflet.css";
 
-import type { BaseMapProps, BaseMapType } from "@/types/map-types";
-import { BASE_MAP_LAT, BASE_MAP_LNG, BASE_MAP_DEFAULT_ZOOM } from '@/lib/constants/map-constants';
+import type { BaseMapProps } from "@/types/map-types";
 
-delete (L.Icon.Default.prototype as any)._getIconUrl; // TO-DO: FIX TYPE ERROR
+// delete (L.Icon.Default.prototype as any)._getIconUrl; // TO-DO: FIX TYPE ERROR
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -41,17 +40,16 @@ function MapInstanceCapture({ onMapReady }: { onMapReady?: (map: L.Map) => void 
 }
 
 export default function BaseMap({
-    center = [BASE_MAP_LAT, BASE_MAP_LNG],
-    zoom = BASE_MAP_DEFAULT_ZOOM,
-    edgeBufferTiles = 5,
-    height = "400px",
+    center,
+    zoom,
+    edgeBufferTiles,
+    height,
     onLocationClick,
-    onMapReady
+    onMapReady,
+    selectedLocation
 }: BaseMapProps) {
-    const [clickedLocation, setClickedLocation] = useState<[number, number] | null>(null);
 
     const handleLocationClick = (lat: number, lng: number) => {
-        setClickedLocation([lat, lng]);
         if (onLocationClick) {
             onLocationClick(lat, lng);
         }
@@ -63,7 +61,7 @@ export default function BaseMap({
             zoom={zoom}
             style={{ height, width: '95%' }}
             // key={`${center[0]}-${center[1]}-${zoom}`} // force re-render when center/zoom changes
-            >
+        >
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; OpenStreetMap contributors'
@@ -73,11 +71,13 @@ export default function BaseMap({
             <MapClickHandler onLocationClick={handleLocationClick} />
             <MapInstanceCapture onMapReady={onMapReady} />
 
-            {clickedLocation && (
-                <Marker position={clickedLocation}>
+            {selectedLocation && (
+                <Marker position={selectedLocation.coordinates}>
                     <Popup>
                         Selected Location<br />
-                        {clickedLocation[0].toFixed(4)}, {clickedLocation[1].toFixed(4)}
+                        {selectedLocation.source === "geocode" ? "Geocoded Location" : "Selected Location"}<br />
+                        {selectedLocation.address && <><strong>{selectedLocation.address}</strong><br /></>}
+                        {selectedLocation.coordinates[0].toFixed(4)}, {selectedLocation.coordinates[1].toFixed(4)}
                     </Popup>
                 </Marker>
             )}

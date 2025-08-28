@@ -1,14 +1,17 @@
-// test geocode component
+// geocode component
 'use client'
 
 import { useState } from 'react';
-import type { GeocodeResult, GeocodeError } from '@/types/geocoding-types';
+import type { GeocodeResult, GeocodeError, GeocodeInterfaceProps } from '@/types/geocoding-types';
 
-export default function GeocodeTest() {
+export default function GeocodeInterface({
+  onGeocodeSuccess
+}:
+  GeocodeInterfaceProps
+) {
   const [address, setAddress] = useState('');
   const [result, setResult] = useState<GeocodeResult | GeocodeError | null>(null);
   const [loading, setLoading] = useState(false);
-
 
   // handle geocode
   const handleGeocode = async () => {
@@ -24,6 +27,11 @@ export default function GeocodeTest() {
       
       const data = await response.json();
       setResult(data);
+
+      // if geocode is successful and coords obtained, update map
+      if (data && !data.error && data.lat && data.lng && onGeocodeSuccess) {
+        onGeocodeSuccess(data.lat, data.lng);
+      }
     } catch {
       setResult({ error: 'Failed to geocode' });
     }

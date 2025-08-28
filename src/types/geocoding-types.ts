@@ -11,3 +11,7 @@ export type GeocodeResult = {
 export type GeocodeError = {
     error: string
 };
+
+export type GeocodeInterfaceProps = {
+    onGeocodeSuccess?: (lat: number, lng:number) => void;
+}
