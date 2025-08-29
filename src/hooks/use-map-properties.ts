@@ -4,6 +4,7 @@ import { useCallback, useEffect } from "react";
 
 import type { BaseMapType, SelectedLocation } from "@/types/map-types";
 import type { Map as LeafletMap } from "leaflet";
+import { GeocodingUtils } from "@/lib/utils/geocoding-utils";
 
 export function useMapProperties(
     properties: BaseMapType,
@@ -57,27 +58,48 @@ export function useMapProperties(
         return [center.lat, center.lng]
     }, [mapRef]);
 
-    // update properties on movement end
+    // update source of truth after map movement, selection
     const handleMapReady = useCallback((map: LeafletMap) => {
         mapRef.current = map;
         updateProperties();
         map.on("moveend zoomend", updateProperties);
     }, [updateProperties, mapRef]);
 
-    // update selectedLocation
-    const handleLocationClick = (lat: number, lng: number) => {
+    const handleLocationClick = useCallback(async (lat: number, lng: number) => {
         console.log("Location clicked:", lat, lng);
         setSelectedLocation({
             coordinates: [lat, lng],
-            source: "click"
+            source: "click",
+            address: "Loading..."
         });
-    };
 
-    const handleGeocodeSuccess = (lat: number, lng: number) => {
+        try {
+            const data = await GeocodingUtils.reverseGeocodeCoordinates(lat, lng);
+            const address = data && !data.error ? data.address : "Address not found";
+            
+            // Update with the resolved address
+            setSelectedLocation({
+                coordinates: [lat, lng],
+                source: "click",
+                address
+            });
+        } catch (error) {
+            console.error("Auto reverse geocoding failed:", error);
+            setSelectedLocation({
+                coordinates: [lat, lng],
+                source: "click",
+                address: "Address lookup failed"
+            });
+        }
+    }, [setSelectedLocation]);
+
+    // update source of truth post-geocode
+    const handleGeocodeSuccess = (lat: number, lng: number, address: string) => {
         console.log("Location found", lat, lng);
         setSelectedLocation({
             coordinates: [lat, lng],
-            source: "geocode"
+            source: "geocode",
+            address
         });
     };
 

@@ -66,11 +66,6 @@ export default function Home() {
           onMapReady={handleMapReady}
           selectedLocation={selectedLocation}
         />
-
-        <div className="mt-4 text-white">
-          <p>Current Zoom: {properties.zoom}</p>
-          <p>Current Center: { [properties.center[0].toFixed(4), properties.center[1].toFixed(4)] }</p>
-        </div>
       </div>
     </main>
   )

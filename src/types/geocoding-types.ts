@@ -17,6 +17,6 @@ export type GeocodeError = {
 
 export type GeocodeInterfaceProps = {
     selectedLocation: SelectedLocation | null;
-    onGeocodeSuccess: (lat: number, lng: number, address?: string) => void;
+    onGeocodeSuccess: (lat: number, lng: number, address: string) => void;
     onReverseGeocodeSuccess: (lat: number, lng: number, address: string) => void;
 }
