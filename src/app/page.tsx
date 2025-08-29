@@ -5,6 +5,7 @@ import { useState, useRef } from "react";
 import { BASE_MAP_LAT, BASE_MAP_LNG, BASE_MAP_DEFAULT_ZOOM } from "@/lib/constants/map-constants";
 
 import GeocodeInterface from "../components/ui-components/geocode-interface";
+import IsochroneInterface from "@/components/ui-components/test-isochrone";
 import { useMapProperties } from "@/hooks/use-map-properties";
 
 import type { BaseMapType, SelectedLocation } from "@/types/map-types";
@@ -55,6 +56,10 @@ export default function Home() {
           selectedLocation={selectedLocation}
           onGeocodeSuccess={handleGeocodeSuccess}
           onReverseGeocodeSuccess={handleReverseGeocodeSuccess}
+        />
+
+        <IsochroneInterface
+          selectedLocation={selectedLocation}
         />
 
         <BaseMap
