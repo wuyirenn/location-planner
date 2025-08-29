@@ -1,7 +1,7 @@
 // reverse geocode api call
 
-import { NextRequest, NextResponse } from "next/server"
-import { googleMaps } from "../../../lib/services/google-maps"
+import { NextRequest, NextResponse } from "next/server";
+import { googleMaps } from "../../../lib/services/google-maps";
 
 export async function POST(request: NextRequest) {
   try {
