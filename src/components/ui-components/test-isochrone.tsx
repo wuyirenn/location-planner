@@ -1,4 +1,4 @@
-// geocode component
+// isochrone component
 "use client"
 
 import { useState } from "react";
@@ -15,8 +15,6 @@ export default function IsochroneInterface({
     const [contoursMinutes, setContoursMinutes] = useState<number>(10)
 
     // fetch isochrone
-
-    // handle geocode
     const handleRetrieveIsochrone = async () => {
         if (!selectedLocation) return;
 
@@ -37,9 +35,11 @@ export default function IsochroneInterface({
                     polygons })
             });
             const data = await response.json();
-            console.log(profile, lat, lng, contoursMinutes, polygons, data)
-            console.log(response)
             setResult(data);
+
+            console.log(profile, lat, lng, contoursMinutes, polygons, typeof(data))
+            console.log(response)
+            console.log(result)
         } catch {
             setResult({ error: "Failed to retrieve isochrone" });
         }
@@ -59,9 +59,9 @@ export default function IsochroneInterface({
                         onChange={(e) => setProfile(e.target.value as "walking" | "driving" | "cycling")}
                         className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
-                        <option value="driving">Driving</option>
-                        <option value="walking">Walking</option>
-                        <option value="cycling">Cycling</option>
+                        <option value="mapbox/driving">Driving</option>
+                        <option value="mapbox/walking">Walking</option>
+                        <option value="mapbox/cycling">Cycling</option>
                     </select>
                 </div>
 

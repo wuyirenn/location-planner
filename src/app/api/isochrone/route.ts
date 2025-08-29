@@ -1,4 +1,4 @@
-// make api call for getting isochrones
+// make api call for retrieving isochrone
 
 import { NextRequest, NextResponse } from "next/server";
 import { mapbox } from "../../../lib/services/mapbox";

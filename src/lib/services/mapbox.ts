@@ -1,4 +1,4 @@
-// service to manage google maps api services
+// service to manage mapbox api services
 const MAPBOX_API_KEY = process.env.MAPBOX_API_KEY;
 
 class MapboxService {
@@ -12,32 +12,38 @@ class MapboxService {
         this.apiKey = MAPBOX_API_KEY;
     }
 
-    // takes address -> returns json with geocoded lat / lng, address, place_id, etc
+    // retrieve isochrone + geojson response
     async create_isochrone(
-        profile: String,
-        lat: Number,
-        lng: Number,
-        contours_minutes: Number, //constraining to one contour
-        polygons: Boolean
+        profile: string,
+        lat: number,
+        lng: number,
+        contours_minutes: number, //constraining to one contour
+        polygons: boolean
     ) {
         try {
             const response = await fetch(
-                `https://api.mapbox.com/isochrone/v1/mapbox/${profile}/${lat},${lng}?contours_minutes=${contours_minutes}&polygons=${polygons}&access_token=${this.apiKey}`
+                `https://api.mapbox.com/isochrone/v1/mapbox/${profile}/${lng},${lat}?contours_minutes=${contours_minutes}&polygons=${polygons}&access_token=${this.apiKey}`
             );
-            
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Mapbox API Error:', response.status, errorText);
+                return {
+                    error: `Mapbox API Error: ${response.status} - ${errorText}`
+                };
+            }
+
             const data = await response.json();
             
-            if (data) {
-                const result = data.results[0];
-                return {
-                    result // return full geojson for now
-                };
+            if (data && data.type === "FeatureCollection") {
+                return data; // note: geojson can be returned directly
             } else {
                 return {
-                    error: `Isochrone retrieval failed`
+                    error: `Invalid response format from Mapbox API`
                 };
             }
         } catch (error) {
+            console.error('Isochrone creation error:', error);
             return {
                 error: error instanceof Error ? error.message : "Isochrone retrieval failed"
             };

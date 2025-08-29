@@ -1,3 +1,5 @@
+// mapbox types + geojson imports
+
 import { FeatureCollection } from "geojson";
 import { SelectedLocation } from "./map-types"
 
