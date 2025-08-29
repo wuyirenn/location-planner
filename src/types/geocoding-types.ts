@@ -1,4 +1,5 @@
 // geocoding types
+import { SelectedLocation } from "./map-types";
 
 export type GeocodeResult = {
     lat: number
@@ -9,9 +10,13 @@ export type GeocodeResult = {
 };
   
 export type GeocodeError = {
-    error: string
+    error: string;
+    lat?: number;
+    lng?: number;
 };
 
 export type GeocodeInterfaceProps = {
-    onGeocodeSuccess?: (lat: number, lng:number) => void;
+    selectedLocation: SelectedLocation | null;
+    onGeocodeSuccess: (lat: number, lng: number, address?: string) => void;
+    onReverseGeocodeSuccess: (lat: number, lng: number, address: string) => void;
 }

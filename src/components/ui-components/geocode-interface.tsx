@@ -3,9 +3,12 @@
 
 import { useState } from "react";
 import type { GeocodeResult, GeocodeError, GeocodeInterfaceProps } from "@/types/geocoding-types";
+import { GeocodingUtils } from "@/lib/utils/geocoding-utils";
 
 export default function GeocodeInterface({
-  onGeocodeSuccess
+  selectedLocation,
+  onGeocodeSuccess,
+  onReverseGeocodeSuccess
 }:
   GeocodeInterfaceProps
 ) {
@@ -19,13 +22,7 @@ export default function GeocodeInterface({
     
     setLoading(true)
     try {
-      const response = await fetch("/api/geocode", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ address })
-      });
-      
-      const data = await response.json();
+      const data = await GeocodingUtils.geocodeAddress(address)
       setResult(data);
 
       // if geocode is successful and coords obtained, update map
@@ -36,7 +33,28 @@ export default function GeocodeInterface({
       setResult({ error: "Failed to geocode" });
     }
     setLoading(false);
-  } // future to-do: move hooks to helper file
+  }
+
+  const handleReverseGeocode = async () => {
+    if (!selectedLocation) return
+
+    setLoading(true);
+    try {
+      const lat = selectedLocation.coordinates[0];
+      const lng = selectedLocation.coordinates[1];
+
+      const data = await GeocodingUtils.reverseGeocodeCoordinates(lat, lng);
+      setResult(data);
+
+      if (data && !data.error && data.address && onReverseGeocodeSuccess) {
+        onReverseGeocodeSuccess(lat, lng, data.address);
+      }
+    } catch {
+      setResult({ error: "Failed to reverse geocode" });
+    }
+    setLoading(false);
+  };
+
 
   return (
     <div className="p-6 w-full bg-dark rounded shadow">
@@ -57,6 +75,20 @@ export default function GeocodeInterface({
           {loading ? "Loading..." : "Geocode"}
         </button>
       </div>
+
+      <div className="flex gap-2 mb-4">
+        <div className="flex-1 p-2">
+
+          <button
+            onClick={handleReverseGeocode}
+            disabled={loading}
+            className="px-4 py-2 bg-blue-500 text-white rounded disabled:opacity-50"
+          >
+            {loading ? "Loading..." : "Reverse Geocode"}
+          </button>
+        </div>
+      </div>
+
 
       {result && (
         <pre className="bg-dark p-4 rounded text-sm">

@@ -19,7 +19,7 @@ export type BaseMapProps = {
 
 export type SelectedLocation = {
     coordinates: [number, number];
-    source: "click" | "geocode";
+    source: string;
     address?: string;
 }
 

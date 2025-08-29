@@ -31,7 +31,12 @@ export default function Home() {
 
   const mapRef = useRef<LeafletMap | null>(null);
 
-  const { handleMapReady, handleLocationClick, handleGeocodeSuccess } = useMapProperties(
+  const { 
+    handleMapReady, 
+    handleLocationClick, 
+    handleGeocodeSuccess,
+    handleReverseGeocodeSuccess
+ } = useMapProperties(
     properties,
     setProperties,
     mapRef,
@@ -47,7 +52,9 @@ export default function Home() {
         </h1>
         
         <GeocodeInterface 
+          selectedLocation={selectedLocation}
           onGeocodeSuccess={handleGeocodeSuccess}
+          onReverseGeocodeSuccess={handleReverseGeocodeSuccess}
         />
 
         <BaseMap

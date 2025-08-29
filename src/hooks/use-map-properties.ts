@@ -19,9 +19,8 @@ export function useMapProperties(
 
         const map = mapRef.current;
         const [lat, lng] = selectedLocation.coordinates;
-        const zoom = (selectedLocation.source === "geocode" && properties.zoom <= 14) ? 14 : properties.zoom;
-
-        map.setView([lat, lng], zoom);
+        
+        map.setView([lat, lng], properties.zoom);
     }, [selectedLocation, mapRef])
 
     // update source of truth
@@ -82,12 +81,22 @@ export function useMapProperties(
         });
     };
 
+    const handleReverseGeocodeSuccess = (lat: number, lng: number, address: string) => {
+        console.log("Location found", lat, lng);
+        setSelectedLocation({
+            coordinates: [lat, lng],
+            source: "reverse-geocode",
+            address
+        });
+    };
+
     return {
         getZoom,
         getCenter,
         getMapInstance,
         handleMapReady,
         handleLocationClick,
-        handleGeocodeSuccess
+        handleGeocodeSuccess,
+        handleReverseGeocodeSuccess
     }
 }

@@ -17,34 +17,64 @@ class GoogleMapsService {
 
   // takes address -> returns json with geocoded lat / lng, address, place_id, etc
   async geocode(address: string) {
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${this.apiKey}`; // call api
-    
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    try {
+        const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${this.apiKey}`
+        );
+        
+        const data = await response.json();
+        
+        if (data.status === 'OK' && data.results.length > 0) {
+            const result = data.results[0];
+            return {
+                lat: result.geometry.location.lat,
+                lng: result.geometry.location.lng,
+                address: result.formatted_address,
+                place_id: result.place_id
+            };
+        } else {
+            return {
+                error: `Geocoding failed: ${data.status}`
+            };
+        }
+    } catch (error) {
+        return {
+            error: error instanceof Error ? error.message : "Geocoding failed"
+        };
     }
-    
-    const data = await response.json();
-    
-    if (data.status !== "OK") {
-      throw new Error(`Geocoding failed: ${data.status} - ${data.error_message || "Unknown error"}`);
+}
+
+    async reverseGeocode(lat: number, lng: number) {
+        try {
+        const response = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${this.apiKey}`
+        );
+        
+        const data = await response.json();
+        
+        if (data.status === 'OK' && data.results.length > 0) {
+            const result = data.results[0];
+            return {
+                lat,
+                lng,
+                address: result.formatted_address,
+                place_id: result.place_id
+            };
+        } else {
+            return {
+                error: `Reverse geocoding failed: ${data.status}`,
+                lat,
+                lng
+            };
+        }
+        } catch (error) {
+            return {
+                error: error instanceof Error ? error.message : "Reverse geocoding failed",
+                lat,
+                lng
+            };
+        }
     }
-    
-    if (!data.results || data.results.length === 0) {
-      throw new Error("No results found");
-    }
-    
-    const result = data.results[0];
-    
-    return {
-      lat: result.geometry.location.lat,
-      lng: result.geometry.location.lng,
-      address: result.formatted_address,
-      place_id: result.place_id
-      // status: data.status
-    };
-  }
 }
 
 export const googleMaps = new GoogleMapsService(); // export as object
