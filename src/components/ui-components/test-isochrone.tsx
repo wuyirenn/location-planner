@@ -5,7 +5,9 @@ import { useState } from "react";
 import type { IsochroneError, IsochroneInterfaceProps, IsochroneResult } from "@/types/mapbox-types";
 
 export default function IsochroneInterface({
-    selectedLocation
+    selectedLocation,
+    isochrone,
+    setIsochrone
 }:
     IsochroneInterfaceProps
 ) {
@@ -36,10 +38,7 @@ export default function IsochroneInterface({
             });
             const data = await response.json();
             setResult(data);
-
-            console.log(profile, lat, lng, contoursMinutes, polygons, typeof(data))
-            console.log(response)
-            console.log(result)
+            setIsochrone(data);
         } catch {
             setResult({ error: "Failed to retrieve isochrone" });
         }
@@ -59,9 +58,9 @@ export default function IsochroneInterface({
                         onChange={(e) => setProfile(e.target.value as "walking" | "driving" | "cycling")}
                         className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
-                        <option value="mapbox/driving">Driving</option>
-                        <option value="mapbox/walking">Walking</option>
-                        <option value="mapbox/cycling">Cycling</option>
+                        <option value="driving">Driving</option>
+                        <option value="walking">Walking</option>
+                        <option value="cycling">Cycling</option>
                     </select>
                 </div>
 

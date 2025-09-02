@@ -5,7 +5,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap, GeoJSON } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-edgebuffer";
 import "leaflet/dist/leaflet.css";
@@ -49,14 +49,37 @@ export default function BaseMap({
     height,
     onLocationClick,
     onMapReady,
-    selectedLocation
+    selectedLocation,
+    isochrone
 }: BaseMapProps) {
 
     const handleLocationClick = (lat: number, lng: number) => {
         if (onLocationClick) {
             onLocationClick(lat, lng);
         }
-    }
+    };
+
+    const getIsochroneStyle = (feature: any) => {
+        // Guard against undefined feature or missing properties
+        if (!feature?.properties?.contour) {
+            return {
+                fillColor: 'gray',
+                fillOpacity: 0.3,
+                weight: 1,
+                color: 'black'
+            };
+        }
+
+        const contour = feature.properties.contour;
+        
+        return {
+            fillColor: contour === 10 ? 'red' : 
+                      contour === 20 ? 'orange' : 'yellow',
+            fillOpacity: 0.3,
+            weight: 2,
+            color: 'black'
+        };
+    };
     
     return (
         <MapContainer
@@ -70,6 +93,16 @@ export default function BaseMap({
                 attribution="&copy; OpenStreetMap contributors"
                 edgeBufferTiles={edgeBufferTiles} // buffer for cleaner renders
             />
+
+            {isochrone && (
+                <>
+                    {console.log("rendering isochrone with data", isochrone)}
+                    <GeoJSON 
+                        data={isochrone} 
+                        style={getIsochroneStyle}
+                    />
+                </>
+            )}
             
             <MapClickHandler onLocationClick={handleLocationClick} />
             <MapInstanceCapture onMapReady={onMapReady} />
@@ -84,6 +117,7 @@ export default function BaseMap({
                     </Popup>
                 </Marker>
             )}
+
         </MapContainer>
     )
 }

@@ -5,6 +5,8 @@ import { SelectedLocation } from "./map-types"
 
 export type IsochroneInterfaceProps = {
     selectedLocation: SelectedLocation | null;
+    isochrone: FeatureCollection;
+    setIsochrone: React.Dispatch<React.SetStateAction<FeatureCollection>>
 }
 
 export type IsochroneResult = {

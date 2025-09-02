@@ -12,6 +12,7 @@ import type { BaseMapType, SelectedLocation } from "@/types/map-types";
 import type { Map as LeafletMap } from "leaflet";
 
 import dynamic from "next/dynamic";
+import { FeatureCollection } from "geojson";
 
 // dynamic import for leaflet map component
 const BaseMap = dynamic(() => import("../components/maps/base-map"), {
@@ -29,6 +30,11 @@ export default function Home() {
   });
 
   const [selectedLocation, setSelectedLocation] = useState<SelectedLocation | null>(null); // source of truth for location
+  const [isochrone, setIsochrone] = useState<FeatureCollection>(
+    {
+      "type": "FeatureCollection",
+      "features": []
+    }); 
 
   const mapRef = useRef<LeafletMap | null>(null);
 
@@ -60,6 +66,8 @@ export default function Home() {
 
         <IsochroneInterface
           selectedLocation={selectedLocation}
+          isochrone={isochrone}
+          setIsochrone={setIsochrone}
         />
 
         <BaseMap
@@ -70,6 +78,7 @@ export default function Home() {
           onLocationClick={handleLocationClick}
           onMapReady={handleMapReady}
           selectedLocation={selectedLocation}
+          isochrone={isochrone}
         />
       </div>
     </main>

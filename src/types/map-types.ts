@@ -1,5 +1,6 @@
 // map and location types
 
+import { FeatureCollection } from "geojson";
 import { Map as LeafletMap } from "leaflet";
 
 export type BaseMapType = {
@@ -15,6 +16,7 @@ export type BaseMapProps = {
     onLocationClick: (lat: number, lng: number) => void;
     onMapReady?: (map: LeafletMap) => void;
     selectedLocation?: SelectedLocation | null;
+    isochrone: FeatureCollection;
 }
 
 export type SelectedLocation = {
