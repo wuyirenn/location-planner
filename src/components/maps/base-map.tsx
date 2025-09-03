@@ -6,6 +6,7 @@
 
 import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap, GeoJSON } from "react-leaflet";
+import type { Feature } from "geojson";
 import L from "leaflet";
 import "leaflet-edgebuffer";
 import "leaflet/dist/leaflet.css";
@@ -53,33 +54,50 @@ export default function BaseMap({
     isochrone
 }: BaseMapProps) {
 
+    // handle map click
     const handleLocationClick = (lat: number, lng: number) => {
         if (onLocationClick) {
             onLocationClick(lat, lng);
         }
     };
 
-    const getIsochroneStyle = (feature: any) => {
-        // Guard against undefined feature or missing properties
+    // get isochrone styling
+    const getIsochroneStyle = (feature?: Feature) => {
+        // Default style
+        const defaultStyle = {
+            fillColor: 'blue',
+            fillOpacity: 0.3,
+            weight: 2,
+            color: 'darkblue'
+        };
+
         if (!feature?.properties?.contour) {
-            return {
-                fillColor: 'gray',
-                fillOpacity: 0.3,
-                weight: 1,
-                color: 'black'
-            };
+            return defaultStyle;
         }
 
         const contour = feature.properties.contour;
         
+        const colorMap: Record<number, string> = {
+            5: 'green',
+            10: 'red',
+            15: 'orange'
+        };
+
         return {
-            fillColor: contour === 10 ? 'red' : 
-                      contour === 20 ? 'orange' : 'yellow',
+            fillColor: colorMap[contour] || 'blue',
             fillOpacity: 0.3,
             weight: 2,
             color: 'black'
         };
     };
+
+    // key for forcing isochrone re-render
+    const isochroneKey = isochrone && isochrone.features.length > 0 
+        ? `isochrone-${isochrone.features.length}-${JSON.stringify(isochrone.features[0]?.properties)}-${Date.now()}`
+        : 'no-isochrone';
+
+    // only try to render geojson if there are actual isochrones
+    const hasIsochroneData = isochrone && isochrone.features && isochrone.features.length > 0;
     
     return (
         <MapContainer
@@ -88,16 +106,18 @@ export default function BaseMap({
             style={{ height, width: "95%" }}
             // key={`${center[0]}-${center[1]}-${zoom}`} // force re-render when center/zoom changes
         >
+            {/* render openstreetmap tiles */}
             <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution="&copy; OpenStreetMap contributors"
                 edgeBufferTiles={edgeBufferTiles} // buffer for cleaner renders
             />
 
-            {isochrone && (
+            {/* render isochrone */}
+            {hasIsochroneData && (
                 <>
-                    {console.log("rendering isochrone with data", isochrone)}
                     <GeoJSON 
+                        key={isochroneKey}
                         data={isochrone} 
                         style={getIsochroneStyle}
                     />
@@ -107,6 +127,7 @@ export default function BaseMap({
             <MapClickHandler onLocationClick={handleLocationClick} />
             <MapInstanceCapture onMapReady={onMapReady} />
 
+            {/* render selected location pin */}
             {selectedLocation && (
                 <Marker position={selectedLocation.coordinates}>
                     <Popup>

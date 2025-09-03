@@ -9,15 +9,16 @@ export type IsochroneInterfaceProps = {
     setIsochrone: React.Dispatch<React.SetStateAction<FeatureCollection>>
 }
 
-export type IsochroneResult = {
-    result: FeatureCollection;
-};
+// DEPRECATED
+// export type IsochroneResult = {
+//     result: FeatureCollection;
+// };
   
-export type IsochroneError = {
-    error: string;
-    profile?: string;
-    lat?: number;
-    lng?: number;
-    contours_minutes?: number;
-    polygons?: boolean;
-};
+// export type IsochroneError = {
+//     error: string;
+//     profile?: string;
+//     lat?: number;
+//     lng?: number;
+//     contours_minutes?: string;
+//     polygons?: boolean;
+// };

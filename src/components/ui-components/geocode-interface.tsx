@@ -1,8 +1,8 @@
 // geocode component
 "use client"
 
-import { useState, useEffect } from "react";
-import type { GeocodeResult, GeocodeError, GeocodeInterfaceProps } from "@/types/geocoding-types";
+import { useState } from "react";
+import type { GeocodeInterfaceProps } from "@/types/geocoding-types";
 import { GeocodingUtils } from "@/lib/utils/geocoding-utils";
 
 export default function GeocodeInterface({
@@ -13,15 +13,7 @@ export default function GeocodeInterface({
   GeocodeInterfaceProps
 ) {
   const [address, setAddress] = useState("");
-  const [result, setResult] = useState<GeocodeResult | GeocodeError | null>(null);
   const [loading, setLoading] = useState(false);
-
-  // auto-clear results when selected location changes
-  useEffect(() => {
-    if (selectedLocation?.source === "click") {
-      setResult(null);
-    }
-  }, [selectedLocation])
 
   // handle geocode
   const handleGeocode = async () => {
@@ -30,14 +22,13 @@ export default function GeocodeInterface({
     setLoading(true)
     try {
       const data = await GeocodingUtils.geocodeAddress(address)
-      setResult(data);
 
       // if geocode is successful and coords obtained, update map
       if (data && !data.error && data.lat && data.lng && onGeocodeSuccess) {
         onGeocodeSuccess(data.lat, data.lng, data.address);
       }
     } catch {
-      setResult({ error: "Failed to geocode" });
+      console.log("failed to geocode");
     }
     setLoading(false);
   }
@@ -51,13 +42,12 @@ export default function GeocodeInterface({
       const [lat, lng] = selectedLocation.coordinates;
 
       const data = await GeocodingUtils.reverseGeocodeCoordinates(lat, lng);
-      setResult(data);
 
       if (data && !data.error && data.address && onReverseGeocodeSuccess) {
         onReverseGeocodeSuccess(lat, lng, data.address);
       }
     } catch {
-      setResult({ error: "Failed to reverse geocode" });
+      console.log("failed to reverse geocode");
     }
     setLoading(false);
   };
