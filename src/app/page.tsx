@@ -20,7 +20,6 @@ const BaseMap = dynamic(() => import("../components/maps/base-map"), {
   loading: () => <div style={{ height: "400px" }}>Loading map...</div>
 })
 
-
 // main app
 export default function Home() {
   // source of truth for map state
@@ -48,7 +47,9 @@ export default function Home() {
     setProperties,
     mapRef,
     selectedLocation,
-    setSelectedLocation
+    setSelectedLocation,
+    isochrone,
+    setIsochrone
   )
 
   return (

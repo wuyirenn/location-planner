@@ -55,11 +55,11 @@ export default function BaseMap({
 }: BaseMapProps) {
 
     // handle map click
-    const handleLocationClick = (lat: number, lng: number) => {
-        if (onLocationClick) {
-            onLocationClick(lat, lng);
-        }
-    };
+    // const handleLocationClick = (lat: number, lng: number) => {
+    //     if (onLocationClick) {
+    //         onLocationClick(lat, lng);
+    //     }
+    // };
 
     // get isochrone styling
     const getIsochroneStyle = (feature?: Feature) => {
@@ -124,7 +124,7 @@ export default function BaseMap({
                 </>
             )}
             
-            <MapClickHandler onLocationClick={handleLocationClick} />
+            <MapClickHandler onLocationClick={onLocationClick} />
             <MapInstanceCapture onMapReady={onMapReady} />
 
             {/* render selected location pin */}

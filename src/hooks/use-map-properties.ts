@@ -5,13 +5,17 @@ import { useCallback, useEffect } from "react";
 import type { BaseMapType, SelectedLocation } from "@/types/map-types";
 import type { Map as LeafletMap } from "leaflet";
 import { GeocodingUtils } from "@/lib/utils/geocoding-utils";
+import { IsochroneUtils } from "@/lib/utils/isochrone-utils";
+import { FeatureCollection } from "geojson";
 
 export function useMapProperties(
     properties: BaseMapType,
     setProperties: React.Dispatch<React.SetStateAction<BaseMapType>>,
     mapRef: React.MutableRefObject<LeafletMap | null>,
     selectedLocation: SelectedLocation | null,
-    setSelectedLocation: React.Dispatch<React.SetStateAction<SelectedLocation | null>>
+    setSelectedLocation: React.Dispatch<React.SetStateAction<SelectedLocation | null>>,
+    isochrone: FeatureCollection | null,
+    setIsochrone: React.Dispatch<React.SetStateAction<FeatureCollection>>
 ) {
 
     // render / pan to correct location automatically on state change
@@ -75,14 +79,28 @@ export function useMapProperties(
 
         try {
             const data = await GeocodingUtils.reverseGeocodeCoordinates(lat, lng);
+
+            const isochrones = await IsochroneUtils.getIsochrone("walking", lat, lng);
+
+            const newIsochroneData = {
+                type: "FeatureCollection" as const,
+                features: [...(isochrones.features || [])],
+                metadata: {
+                    timestamp: Date.now()
+                }
+            };
+
             const address = data && !data.error ? data.address : "Address not found";
             
-            // Update with the resolved address
+            // Update with the resolved address and isochrone
             setSelectedLocation({
                 coordinates: [lat, lng],
                 source: "click",
                 address
             });
+
+            setIsochrone(newIsochroneData)
+            
         } catch (error) {
             console.error("Auto reverse geocoding failed:", error);
             setSelectedLocation({
