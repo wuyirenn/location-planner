@@ -65,11 +65,11 @@ export default function Home() {
           onReverseGeocodeSuccess={handleReverseGeocodeSuccess}
         />
 
-        <IsochroneInterface
+        {/* <IsochroneInterface
           selectedLocation={selectedLocation}
           isochrone={isochrone}
           setIsochrone={setIsochrone}
-        />
+        /> */}
 
         <BaseMap
           center={properties.center}
